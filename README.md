@@ -142,7 +142,7 @@ npm run watch
 - Filter by completed status
 - Avatar image with fallback
 - Relative timestamps
-
+- Todos With Duplicate Title are not allowed
 ---
 
 ## 📦 Deployment Notes

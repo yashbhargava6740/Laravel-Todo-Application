@@ -19,21 +19,23 @@ class TodoController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'body' => 'nullable|string',
-            'image_url' => 'nullable|url|max:255',
-            'completed' => 'boolean',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'body' => 'nullable|string',
+        'image_url' => 'nullable|url|max:255',
+    ]);
 
-        // Set default value for 'completed' if not present
-        $validated['completed'] = $validated['completed'] ?? false;
-
-        $todo = Todo::create($validated);
-
-        return response()->json($todo, 201);
+    $exists = Todo::whereRaw('LOWER(title) = ?', [strtolower($validated['title'])])->exists();
+    if ($exists) {
+        return response()->json(['message' => 'Task with this title already exists.'], 409);
     }
+
+    $todo = Todo::create($validated);
+
+    return response()->json($todo, 201);
+}
+
 
     public function update(Request $request, $id)
     {

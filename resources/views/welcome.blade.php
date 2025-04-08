@@ -56,28 +56,34 @@
   }
 
   async function addTodo() {
-    const title = document.getElementById('newTodoTitle').value.trim();
-    const body = document.getElementById('newTodoBody').value.trim();
-    const image_url = document.getElementById('newTodoImage').value.trim();
+  const title = document.getElementById('newTodoTitle').value.trim();
+  const body = document.getElementById('newTodoBody').value.trim();
+  const image_url = document.getElementById('newTodoImage').value.trim();
 
-    if (!title) return alert('Title is required');
+  if (!title) return alert('Title is required');
 
-    const res = await fetch('/createTodo', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({ title, body, image_url })
-    });
+  const res = await fetch('/createTodo', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    },
+    body: JSON.stringify({ title, body, image_url })
+  });
 
-    if (res.ok) {
-      document.getElementById('newTodoTitle').value = '';
-      document.getElementById('newTodoBody').value = '';
-      document.getElementById('newTodoImage').value = '';
-      fetchTodos();
-    }
+  if (res.status === 409) {
+    alert('A task with this title already exists!');
+    return;
   }
+
+  if (res.ok) {
+    document.getElementById('newTodoTitle').value = '';
+    document.getElementById('newTodoBody').value = '';
+    document.getElementById('newTodoImage').value = '';
+    fetchTodos();
+  }
+}
+
 
   async function fetchTodos() {
     const res = await fetch('/getTodos');
