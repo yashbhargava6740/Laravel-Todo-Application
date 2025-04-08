@@ -24,7 +24,7 @@ Follow these steps to get the project running locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/todo-laravel.git
+git clone https://github.com/yashbhargava6740/Laravel-Todo-Application.git
 cd todo-laravel
 ```
 
