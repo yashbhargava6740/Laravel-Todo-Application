@@ -38,60 +38,22 @@
   </div>
 </div>
 
-<!-- <script>
+<script>
   const taskList = document.getElementById('taskList');
+  const showAllCheckbox = document.getElementById('showAllTasks');
 
   function timeAgo(date) {
-        const now = new Date();
-        const diff = (now - date) / 1000; // in seconds
+    const now = new Date();
+    const diff = (now - date) / 1000;
 
-        if (diff < 60) return 'just now';
-        if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) > 1 ? 's' : ''} ago`;
-        if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) > 1 ? 's' : ''} ago`;
-        if (diff < 604800) return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? 's' : ''} ago`;
-        if (diff < 2592000) return `${Math.floor(diff / 604800)} week${Math.floor(diff / 604800) > 1 ? 's' : ''} ago`;
-        if (diff < 31536000) return `${Math.floor(diff / 2592000)} month${Math.floor(diff / 2592000) > 1 ? 's' : ''} ago`;
-        return `${Math.floor(diff / 31536000)} year${Math.floor(diff / 31536000) > 1 ? 's' : ''} ago`;
-    }
-
-
-  async function fetchTodos() {
-    const res = await fetch('/getTodos');
-    const todos = await res.json();
-    renderTodos(todos);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) > 1 ? 's' : ''} ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) > 1 ? 's' : ''} ago`;
+    if (diff < 604800) return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? 's' : ''} ago`;
+    if (diff < 2592000) return `${Math.floor(diff / 604800)} week${Math.floor(diff / 604800) > 1 ? 's' : ''} ago`;
+    if (diff < 31536000) return `${Math.floor(diff / 2592000)} month${Math.floor(diff / 2592000) > 1 ? 's' : ''} ago`;
+    return `${Math.floor(diff / 31536000)} year${Math.floor(diff / 31536000) > 1 ? 's' : ''} ago`;
   }
-
-  function renderTodos(todos) {
-  taskList.innerHTML = '';
-  todos.forEach(todo => {
-    taskList.innerHTML += `
-      <div class="d-flex align-items-center justify-content-between border-bottom py-3">
-        <div class="form-check d-flex align-items-start gap-2 flex-grow-1">
-          <input 
-            class="form-check-input mt-1" 
-            type="checkbox"
-            onchange="toggleTodo(this)"
-            data-id="${todo.id}"
-            data-title="${todo.title}"
-            data-body="${todo.body ?? ''}"
-            data-image_url="${todo.image_url ?? ''}"
-            ${todo.completed ? 'checked' : ''}>
-          <div>
-            <div class="fw-semibold">${todo.title}</div>
-            <small class="text-muted">${todo.body ?? ''}</small><br>
-            <small class="text-muted">${timeAgo(new Date(todo.created_at))}</small>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <img src="${todo.image_url ?? `https://i.pravatar.cc/30?u=${todo.id}`}" class="avatar" />
-          <button class="btn btn-sm btn-outline-secondary" onclick="deleteTodo(${todo.id})">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-      </div>`;
-  });
-}
-
 
   async function addTodo() {
     const title = document.getElementById('newTodoTitle').value.trim();
@@ -117,55 +79,6 @@
     }
   }
 
-  async function toggleTodo(checkbox) {
-  const id = checkbox.dataset.id;
-  const title = checkbox.dataset.title;
-  const body = checkbox.dataset.body;
-  const image_url = checkbox.dataset.image_url;
-  const completed = checkbox.checked;
-
-  await fetch(`/updateTodo/${id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': '{{ csrf_token() }}'
-    },
-    body: JSON.stringify({ title, body, image_url, completed })
-  });
-
-  fetchTodos();
-}
-
-
-  async function deleteTodo(id) {
-    await fetch(`/deleteTodo/${id}`, {
-      method: 'DELETE',
-      headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-    });
-    fetchTodos();
-  }
-
-  document.addEventListener('DOMContentLoaded', fetchTodos);
-</script> -->
-
-
-<script>
-  const taskList = document.getElementById('taskList');
-  const showAllCheckbox = document.getElementById('showAllTasks');
-
-  function timeAgo(date) {
-    const now = new Date();
-    const diff = (now - date) / 1000;
-
-    if (diff < 60) return 'just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) > 1 ? 's' : ''} ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) > 1 ? 's' : ''} ago`;
-    if (diff < 604800) return `${Math.floor(diff / 86400)} day${Math.floor(diff / 86400) > 1 ? 's' : ''} ago`;
-    if (diff < 2592000) return `${Math.floor(diff / 604800)} week${Math.floor(diff / 604800) > 1 ? 's' : ''} ago`;
-    if (diff < 31536000) return `${Math.floor(diff / 2592000)} month${Math.floor(diff / 2592000) > 1 ? 's' : ''} ago`;
-    return `${Math.floor(diff / 31536000)} year${Math.floor(diff / 31536000) > 1 ? 's' : ''} ago`;
-  }
-
   async function fetchTodos() {
     const res = await fetch('/getTodos');
     let todos = await res.json();
@@ -179,8 +92,12 @@
   }
 
   function renderTodos(todos) {
-    taskList.innerHTML = '';
-    todos.forEach(todo => {
+  taskList.innerHTML = '';
+  const showAll = document.getElementById('showAllTasks').checked;
+
+  todos
+    .filter(todo => showAll || !todo.completed)  // 👈 Filter based on checkbox
+    .forEach(todo => {
       taskList.innerHTML += `
         <div class="d-flex align-items-center justify-content-between border-bottom py-3">
           <div class="form-check d-flex align-items-start gap-2 flex-grow-1">
@@ -207,58 +124,40 @@
           </div>
         </div>`;
     });
-  }
+}
 
-  async function addTodo() {
-    const title = document.getElementById('newTodoTitle').value.trim();
-    const body = document.getElementById('newTodoBody').value.trim();
-    const image_url = document.getElementById('newTodoImage').value.trim();
-
-    if (!title) return alert('Title is required');
-
-    const res = await fetch('/createTodo', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({ title, body, image_url })
-    });
-
-    if (res.ok) {
-      document.getElementById('newTodoTitle').value = '';
-      document.getElementById('newTodoBody').value = '';
-      document.getElementById('newTodoImage').value = '';
-      fetchTodos();
-    }
-  }
 
   async function toggleTodo(checkbox) {
-    const id = checkbox.dataset.id;
-    const title = checkbox.dataset.title;
-    const body = checkbox.dataset.body;
-    const image_url = checkbox.dataset.image_url;
-    const completed = checkbox.checked;
+  const id = checkbox.dataset.id;
+  const title = checkbox.dataset.title;
+  const body = checkbox.dataset.body;
+  const image_url = checkbox.dataset.image_url;
+  const completed = checkbox.checked;
 
-    await fetch(`/updateTodo/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({ title, body, image_url, completed })
-    });
+  await fetch(`/updateTodo/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    },
+    body: JSON.stringify({ title, body, image_url, completed })
+  });
 
-    fetchTodos();
-  }
+  fetchTodos();
+}
 
   async function deleteTodo(id) {
-    await fetch(`/deleteTodo/${id}`, {
-      method: 'DELETE',
-      headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-    });
-    fetchTodos();
-  }
+  const confirmDelete = confirm("Are you sure to delete this task?");
+  if (!confirmDelete) return;
+
+  await fetch(`/deleteTodo/${id}`, {
+    method: 'DELETE',
+    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
+  });
+
+  fetchTodos();
+}
+
 
   showAllCheckbox.addEventListener('change', fetchTodos);
   document.addEventListener('DOMContentLoaded', fetchTodos);
