@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  title: Laravel Todo API
+  description: API documentation for a simple Laravel Todo application
+  version: 1.0.0
+
+servers:
+  - url: http://localhost
+
+paths:
+  /getTodos:
+    get:
+      summary: Get all todos
+      tags:
+        - Todos
+      responses:
+        '200':
+          description: A list of todos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+
+  /createTodo:
+    post:
+      summary: Create a new todo
+      tags:
+        - Todos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTodo'
+      responses:
+        '201':
+          description: Todo created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+
+  /updateTodo/{id}:
+    put:
+      summary: Update an existing todo
+      tags:
+        - Todos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodo'
+      responses:
+        '200':
+          description: Todo updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+
+  /deleteTodo/{id}:
+    delete:
+      summary: Delete a todo
+      tags:
+        - Todos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Todo deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Todo deleted
+
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        body:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    NewTodo:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+
+    UpdateTodo:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
